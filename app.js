@@ -1,36 +1,59 @@
-function buttonClick(){
-let queryloc = document.querySelector('#lock').value
-const url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+ queryloc +"&format=json&origin=*"
+async function buttonClick(){
+
+ let queryloc = document.querySelector('#lock').value
+
+ let ul = document.querySelector('#zone')
+ if(queryloc){
+  ul.innerHTML = ''
+ }
+
+ const url = "https://fr.wikipedia.org/w/api.php?action=opensearch&search="+ queryloc +"&format=json&origin=*"
 
  const init = {
    method: 'GET',
    mode: 'cors'
  }
 
- fetch(url,init)
-    .then(response => response.json()).then(data => {
-      for(var i=0; i<data[1].length; i++){
-       var ul = document.querySelector('#zone')
-       var li = document.createElement('li')
-       var a =  document.createElement('a')
-       var d =  document.createElement('div')
-       var p =  document.createElement('p')
+  try{
+   let response = await fetch(url,init)
 
-       d.classList.add('green')
+   if(response.ok){
+    let data = await response.json()
+ 
+    for(var i=0; i<data[1].length; i++){
+     let li = document.createElement('li')
+     let a =  document.createElement('a')
+     let d =  document.createElement('div')
+     let p =  document.createElement('p')
+    
+     d.classList.add('green')
+  
+     a.href = data[3][i]
+     a.innerHTML = data[1][i]
+     d.innerHTML = data[3][i]
+     p.innerHTML = data[2][i]
+  
+     li.appendChild(a)
+     li.appendChild(d)
+     li.appendChild(p)
+  
+     ul.appendChild(li)
+  
+    }
+     
+   }else{
+     alert('Erreur')
+   }
 
-       a.href = data[3][i]
-       a.innerHTML = data[1][i]
-       d.innerHTML = data[3][i]
-       p.innerHTML = data[2][i]
-
-       li.appendChild(a)
-       li.appendChild(d)
-       li.appendChild(p)
-
-       ul.appendChild(li)
-       
-      }
-    })
+  }catch{
+     alert('Erreur')
+  }
+  
+  
 }
+
+
+
+
 
 
